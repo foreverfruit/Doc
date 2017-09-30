@@ -1,0 +1,21 @@
+shadowsocks			1
+typora				1
+wiznote				1
+eclipse				1
+putty/SSH client	1
+source insight		1
+tim					1
+clould music		1
+firefox				1
+smartgit / git		1
+jdk					1
+sublime				1
+tim					1
+wechat				1
+youdaodict			1
+wps/pdf reader		1
+chrome				1
+baidu cloud disk 	1
+python				1
+winrar              1
+office
