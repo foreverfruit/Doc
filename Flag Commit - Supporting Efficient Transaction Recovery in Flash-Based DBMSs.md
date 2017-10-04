@@ -52,5 +52,11 @@ ps：并没有像Introduction介绍的那样在本节介绍研究背景
 
 ---
 
-## 基本的Flag Commit协议
+## Basic Flag Commit Protocols
+
+为了系统恢复时确定事务该重做还是丢弃，需要保持对数据库的更新状态以及事务状态的跟踪。shadow paging利用日志进行异地更新以记录事务状态。本文提出的flagcommit基于shadowpaging的方法和循环提交的思想。
+
+flagcommit在每个影子页的OOB区存储一个指向属于同一个事务的之前一个flash page的指针，同时存储状态标志、页版本、事务ID，通过这个链可以找到属于该事务的所有页，通过页中的状态标志可以检查该事务的提交状态。
+
+### Commit-Based Flag Commit
 
