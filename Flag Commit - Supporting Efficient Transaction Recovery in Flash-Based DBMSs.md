@@ -2,7 +2,9 @@
 
 ---
 
-#  基于闪存的数据库管理系统的高效事务恢复提交协议：Flag Commit
+#  Flag Commit：Supporting Efficient Transaction Recovery in Flash-Based DBMSs
+
+
 
 ---
 
@@ -121,8 +123,66 @@ CFC协议采用标志指示已提交的事务，默认情况下页的事务标�
 
 ### 3.4 Block-Based Flag Technique
 
+基于块的标志技术的提出是为了在特定情况下节省页的重编程操作。通常情况下垃圾回收时需要对相应的页的状态标志做修改，需要在该页上重新编程。但是当需要被重编程的这个页正好处在当前需要被回收的块上时，可以采用本节提出的基于块的标志技术，节省页的重编程操作，直接在新块上修改标志。
+
+## 4. Advanced Flagcommit Protocols
+
+扩展Flagcommit协议，以支持采用no-force策略（事务可随时提交，更多的committed事务）的buffer管理，以及高并发控制。
+
+### 4.1 Supporting No-Force Buffer Management
+
+No-Force策略下，事务提交时，没必要立即将buffer中的影子页flush到storage中，因为No-Force策略允许任意commit，若立即flush，会造成写入阻塞，降低事务响应时间和系统吞吐量。（风险是：此时系统奔溃，无法重做已提交的事务，应该committed page没有被持久化到storage中）
+
+为解决上述问题，可以采用将flagcommit协议联合重做日志机制（redo logging scheme）。
+
+工作流程：
+
+- 数据更新前，产生一个redo log record并存入log buffer中。log中保存事务ID、页ID、log记录ID、操作码（更新、删除、插入）、操作数据Data、本事务的前一个log记录的指针PrevLN。
+- 当影子页从memory持久化到flash disk时，其对应的log record被移除。
+- 当事务提交时，若该事务更新的pages还只是缓存在memory中，那么追加一条commit log record到log buffer中，然后将log buffer内容持久化到flash disk中。
+- 事务中止时，回滚memory中被它更新的页，同时移除log record
+
+### 4.2 Supporting Record-Level Concurrency Control
+
+。。。。。。
+
+### 4.3 Putting All Together
+
+4.1与4.2的方案的结合
+
+更新算法、中止算法、提交算法、垃圾回收、事务恢复（恢复算法）
+
+。。。。。。
+
+## 5. Performance Evaluation
+
+基于TPC-C标准对flagcommit协议做性能测试，对比cyclic commit协议和WAL-Based commit协议。
+
+### 5.1 Experiment Setup
+
+- 实验标准：TPC-C
+- 实验平台：windows xp + intel Quad CPU + SSD simulator + ...
+- 实验对象：CFC\AFC（with block-based flag technique and their extensions）、SCC\BPCC（cyclic commit protocol）、WAL-based commit protocol
+- 测量数据：throughtput、transaction execution time、commit response time、recovery cost、garbage collection overhead
+- 实验时常：30m预热模拟器+4h实际评估时间
+
+### 5.2 Comparison with Cyclic Commit Protocols
 
 
+
+
+
+### 5.3 Evaluation of Advanced flagcommit Protocols
+
+
+
+## 6. Related Work
+
+
+
+
+
+## 7. Conclusions And Future Work
 
 
 
