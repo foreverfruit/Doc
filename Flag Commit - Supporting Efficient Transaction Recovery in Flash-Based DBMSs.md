@@ -168,9 +168,17 @@ No-Force策略下，事务提交时，没必要立即将buffer中的影子页flu
 
 ### 5.2 Comparison with Cyclic Commit Protocols
 
+CFC & AFC  VS  SCC & BPCC ：相同环境设置（采用force缓冲管理及页级的并发控制）
 
-
-
+1. 相同中止率（低中止率，通常情况下），对比4种协议。
+   - 事务吞吐率：AFC>CFC >> BPCC>SCC
+   - 事务执行时间：AFC<CFC << BPCC<SCC，执行时间越短，造成的事务阻塞可能性越小，事务通过率越高。
+   - 垃圾回收开销：AFC<CFC << BPCC<SCC
+   - 恢复时间：CFC ≈ BPCC ≈ SCC << AFC，AFC需要访问遍历每一个标志确定该页的状态，而CFC仅需判断头也是否是TRUE标志
+2. 不同中止率对吞吐率和平均GC时间对比。
+   - 吞吐率：CFC\AFC在不同中止率下吞吐量都大于BPCC\SCC
+   - 平均GC时间：AFC\CFC明显小于BPCC\SCC，且对中止率不敏感
+3. 内存消耗：CFC ≈ AFC ≈ SCC << BPCC
 
 ### 5.3 Evaluation of Advanced flagcommit Protocols
 
@@ -178,12 +186,14 @@ No-Force策略下，事务提交时，没必要立即将buffer中的影子页flu
 
 ## 6. Related Work
 
+闪存方面数据访问技术的介绍。
 
-
-
+结论：在闪存事务方面的研究较少，本文的研究在基于闪存的DBMSs的事务恢复方面具有填补空白的作用。
 
 ## 7. Conclusions And Future Work
 
+为基于闪存的DBMS提出两种新颖的flagcommit协议，CFC&AFC，充分利用闪存的快速随机访问、异地更新、页元数据区、部分可编程的特性。通过使用影子页的提交标志保证了事务的原子性和持久性。且CFC致力于快速恢复，AFC侧重与更高的事务性能。并对两种协议做了全面的评估测试。
 
+进一步工作：1）扩展该flagcommit到MLC及其他的非易失性存储器中。需要克服如MLC不支持部分编程能力等问题。2）对flagcommit协议做进一步优化，以减少额外开销。3）在真正的闪存中具体实现该协议。
 
 
