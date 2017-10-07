@@ -182,7 +182,20 @@ CFC & AFC  VS  SCC & BPCC ：相同环境设置（采用force缓冲管理及页�
 
 ### 5.3 Evaluation of Advanced flagcommit Protocols
 
+CFC_ex & AFC_ex  VS  WAL-based commit protocol ：相同环境设置（采用no-force缓冲管理及记录级的并发控制）
 
+1. 部分编程等级（可同时通过编程方式修改page的状态标志的数量）的影响：部分编程等级造成同一时间更新的页更多，因此，可处理的事务更多，因冲突引起的事务重新开始更少。但超过2或3就会引起吞吐量下降。
+2. 与WAL-based commit protocol对比：
+   - 吞吐量
+   - 事务提交响应时间
+   - 存储空间消耗
+   - 垃圾回收时间开销
+3. 事务大小（平均一个事务写入的页数量）的影响：
+   - 吞吐量
+   - GC时间
+4. 缓冲池大小的影响：
+   - 吞吐量
+   - GC时间
 
 ## 6. Related Work
 
