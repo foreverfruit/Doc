@@ -19,3 +19,4 @@ baidu cloud disk 	1
 python				1
 winrar              1
 office
+potplayer
