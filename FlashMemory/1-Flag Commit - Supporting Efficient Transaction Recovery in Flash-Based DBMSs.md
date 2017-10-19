@@ -49,9 +49,6 @@
 - 利用分散写和擦除实现闪存的磨损均衡，以延长使用寿命。
 
 
-
-ps：并没有像Introduction介绍的那样在本节介绍研究背景
-
 ---
 
 ## 3. Basic Flag Commit Protocols
