@@ -32,6 +32,8 @@ Numpy是一种开源的扩展的数值计算库。
 
   - random随机数生成、linspace(start,end,amount)生成等区间的离散列。
 
+  - random.randn(count)生成count个均值为0方差为1的数组
+
   - 数据的导入：converters参数的使用。
 
     ```python
@@ -196,4 +198,117 @@ plt.show()
 ---
 
 ## 条形图
+
+np.bar(parameters)
+
+练习：iris的两种条形图
+
+```python
+"""
+累计条形图，stacked bar graph
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+from src.utils import utils as tool
+
+sepal_length,sepal_width,petal_length,petal_width = np.loadtxt(tool.getPath()+'/dataset/iris.data',
+                  delimiter=',',
+                  unpack=True,dtype=float,usecols=(0,1,2,3))
+
+# data
+sun_sepal_length = [np.sum(sepal_length[0:50]),np.sum(sepal_length[51:100]),np.sum(sepal_length[101:150])]
+sun_sepal_width = [np.sum(sepal_width[0:50]),np.sum(sepal_width[51:100]),np.sum(sepal_width[101:150])]
+sun_petal_length = [np.sum(petal_length[0:50]),np.sum(petal_length[51:100]),np.sum(petal_length[101:150])]
+sun_petal_width = [np.sum(petal_width[0:50]),np.sum(petal_width[51:100]),np.sum(petal_width[101:150])]
+
+
+# plot
+left = np.arange(3)
+width = 0.5
+# 这里有大量重复的矩阵计算，需要优化
+bar1 = plt.bar(left,sun_sepal_length,width,yerr=sun_sepal_length,align='center',color='red')
+bar2 = plt.bar(left,sun_sepal_width,width,yerr=sun_sepal_width,bottom=sun_sepal_length,align='center',color='green')
+bar3 = plt.bar(left,sun_petal_length,width,yerr=sun_petal_length,bottom=np.add(sun_sepal_length,sun_sepal_width),align='center',color='blue')
+bar4 = plt.bar(left,sun_petal_width,width,yerr=sun_petal_width,bottom=np.add(np.add(sun_sepal_length,sun_sepal_width),sun_petal_length),align='center',color='black')
+# 坐标轴美化
+plt.ylabel('value')
+plt.title('this is title')
+plt.xticks(left,('typeA','typeB','typeC'))
+# 图例标注
+plt.legend((bar1[0], bar2[0],bar3[0],bar4[0]), ('sepal_length', 'sepal_width','petal_length','petal_width'))
+plt.show()
+```
+
+```python
+"""
+并列对比条形图
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+from src.utils import utils as tool
+
+sepal_length,sepal_width,petal_length,petal_width = np.loadtxt(tool.getPath()+'/dataset/iris.data',
+                  delimiter=',',
+                  unpack=True,dtype=float,usecols=(0,1,2,3))
+
+# data
+sun_sepal_length = [np.sum(sepal_length[0:50]),np.sum(sepal_length[51:100]),np.sum(sepal_length[101:150])]
+sun_sepal_width = [np.sum(sepal_width[0:50]),np.sum(sepal_width[51:100]),np.sum(sepal_width[101:150])]
+sun_petal_length = [np.sum(petal_length[0:50]),np.sum(petal_length[51:100]),np.sum(petal_length[101:150])]
+sun_petal_width = [np.sum(petal_width[0:50]),np.sum(petal_width[51:100]),np.sum(petal_width[101:150])]
+
+x = np.arange(0,15,5)
+width = 0.5
+
+bar1 = plt.bar(x,sun_sepal_length,width,color='red')
+bar2 = plt.bar(x+width+0.1,sun_sepal_width,width,color='green')
+bar3 = plt.bar(x+width*2+0.2,sun_petal_length,width,color='blue')
+bar4 = plt.bar(x+width*3+0.3,sun_petal_width,width,color='black')
+
+plt.xticks(x+width*2,('A','B','C'))
+plt.legend((bar1[0],bar2[0],bar3[0],bar4[0]),('sepal_length','sepal_width','petal_length','petal_width'),loc=2)
+
+plt.show()
+```
+
+---
+
+## 直方图
+
+类似于条形图，但是通常是展示连续数据。
+
+plt.hist(data,bins,color,normed)，bins表示的直方图的分段数量，normed决定y轴是频率还是计数
+
+```python
+# 随机生成数据做直方图
+import numpy as np
+import matplotlib.pyplot as plt
+
+mean = 20
+var = 0.5
+data = mean+var*np.random.randn(100000)
+
+# plt.hist(data,bins=50,normed=False,color='red')
+# 当直方图的划分很大时，就是密度曲线
+plt.hist(data,bins=500,normed=True,color='red')
+plt.show()
+```
+
+```python
+# 二维的直方图，用颜色表示联合密度
+import numpy as np
+import matplotlib.pyplot as plt
+
+# xy均值分别为1和5，方差都为1
+x = 1+np.random.randn(2000)
+y = 5+np.random.randn(2000)
+
+plt.hist2d(x,y,bins=40)
+# 图通过颜色深浅表示概率，显然在(x,y)=(1,5)处密度最大，颜色最亮
+plt.show()
+```
+
+---
+
+## 饼状图
 

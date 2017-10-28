@@ -4,7 +4,7 @@ import  matplotlib.pyplot as plt
 import  os
 pro_root = os.path.abspath('..')
 
-sepal_length,sepal_width = np.loadtxt(pro_root+'\\dataset\\iris.data',
+sepal_length,sepal_width = np.loadtxt(pro_root+'/dataset/iris.data',
                   delimiter=',',
                   unpack=True,dtype=float,usecols=(0,1))
 

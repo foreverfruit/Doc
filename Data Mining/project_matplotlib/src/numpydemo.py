@@ -5,13 +5,13 @@ import  os
 nd_a = np.random.randint(0,1000,100)
 pro_root = os.path.abspath('..')
 # 保存为文件，参数看文档
-np.savetxt(pro_root + '\\dataset\\array.txt',
+np.savetxt(pro_root + '/dataset/array.txt',
            nd_a,delimiter=',',
            header='my random data',
            footer='over',fmt='%d')
 
 # 读取文件
-nd_b = np.loadtxt(pro_root+'\\dataset\\array.txt',
+nd_b = np.loadtxt(pro_root+'/dataset/array.txt',
                   dtype=int,
                   delimiter=',',
                   skiprows=1,unpack=False,)

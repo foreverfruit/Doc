@@ -1,7 +1,7 @@
 import  numpy as np
 import  os
 pro_root = os.path.abspath('..')
-sepal_length,sepal_width,petal_length,petal_width = np.loadtxt(pro_root+'\\dataset\\iris.data',
+sepal_length,sepal_width,petal_length,petal_width = np.loadtxt(pro_root+'/dataset/iris.data',
                   delimiter=',',
                   unpack=True,dtype=float,usecols=(0,1,2,3))
 

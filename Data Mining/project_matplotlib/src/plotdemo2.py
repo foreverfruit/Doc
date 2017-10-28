@@ -2,7 +2,7 @@ import  numpy as np
 import  matplotlib.pyplot as plt
 import  os
 pro_root = os.path.abspath('..')
-data = np.loadtxt(pro_root+'\\dataset\\iris.data',
+data = np.loadtxt(pro_root+'/dataset/iris.data',
                   delimiter=',',
                   unpack=False,dtype=float,usecols=(0,1,2,3))
 
