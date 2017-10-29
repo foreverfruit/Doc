@@ -4,3 +4,7 @@
 *.classpath
 *.project
 *.class
+/Data Mining/DecisionTree/.settings
+
+/Data Mining/DecisionTree/bin
+
