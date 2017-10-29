@@ -1,3 +1,6 @@
 *.pdf
 *.PDF
 /Data Mining/project_matplotlib/.idea
+*.classpath
+*.project
+*.class
