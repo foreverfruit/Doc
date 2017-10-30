@@ -5,6 +5,6 @@
 *.project
 *.class
 /Data Mining/DecisionTree/.settings
-
+*.pyc
 /Data Mining/DecisionTree/bin
 

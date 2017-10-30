@@ -312,3 +312,86 @@ plt.show()
 
 ## 饼状图
 
+plt.pie(dataArray,labels,autopct='%d',explode,shadow)
+
+- autopct用于格式化饼块的占比数据显示格式
+- explode是一个集合，表示每一块饼距离中心的距离，用以强调突出某一个饼块
+- shadow是boolean型数据指示是否给饼块添加立体阴影
+
+```python
+import matplotlib.pyplot as plt
+
+data = (20, 10, 30, 25)
+labels = 'SH', 'BJ', 'SZ', 'GZ'
+colors = ('red', 'green', 'blue', 'yellow')
+explode = (0, 0, 0.2, 0.05)
+
+# 饼图中坐标x、y默认不是1比1的，所以图像会椭圆，需要指定坐标轴1:1以画出正圆
+plt.axes(aspect=1)
+
+plt.pie(x=data,labels=labels,colors=colors,explode=explode, autopct='%0.1f%%', shadow=True)
+plt.show()
+
+```
+
+---
+
+## 箱形图
+
+plt.boxplot(data,sym,whis)
+
+- sym表示异常点的显示样式，可同时指定颜色、样式等
+- whis，whiskers，表示离群点的范围。箱形图会统计[最小值、四分位值Q1、中间值、四分之三分位值Q3、最大值，平均值，以及离群点]，这里最小值和最大值是排除离群点的，那么怎么确定离群点和最小值最大值之间的区分呢？用whis，$最小值=Q1-(Q3-Q1)*whis$，$最大值=Q3+(Q3-Q1)*whis$，即异常点的判定取决于箱长(Q3-Q1)和whis。whis默认为1.5
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from src.utils import utils as tool
+
+sepal_length,sepal_width,petal_length,petal_width = np.loadtxt(tool.getPath()+'/dataset/iris.data',
+                  delimiter=',',
+                  unpack=True,dtype=float,usecols=(0,1,2,3))
+
+# 画三种花的sepal_length的箱形图
+x = sepal_length[:50],sepal_length[51:100],sepal_length[101:150]
+labels = 'A','B','C'
+
+plt.boxplot(x,labels=labels,whis=1,sym='bx')
+plt.show()
+```
+
+```python
+# test whis
+import matplotlib.pyplot as plt
+
+x = range(1,100,1)
+# Q1=25 MID=50 Q3=75 boxLength=50, 如果whiskers=0.4,则上下都会有5个离群点
+plt.boxplot(x,whis=0.4,sym='r.')
+plt.show()
+```
+
+---
+
+## 颜色和样式
+
+调整颜色、线型、点型
+
+- 字符表示八种内建颜色：red、green、blue、cyan、magenta、yellow、black、white，均可用首字母替代。还可以十六进制表示颜色，如#FF08AB，分别表示三个颜色通道值。还可以RGB元组表示，如（255,255,255）。还有一种灰度表示，color=‘0.5’，表示图像是一个灰色图像，值表示颜色程度。
+- 点，直接在matplotlib的官网文档中找markers。matplotlib默认在显示不同marker时分配不同颜色（认为是不同的需要显示的对象）。
+- 线：‘--‘虚线，’-‘实线，’-.‘点划线，’:‘点线。
+- 样式字符串：可同时在字符串中包含以上三种样式信息，如'rx--'，表示红色，点为x，线为虚线
+
+---
+
+## 编程方式
+
+pyplot、pylab和面向对象的方式
+
+- pyplot：简单易用，底层定制能力不够。
+- pylab：结合matplotlib和numpy的模块，模拟了matlab的环境，不推荐用了
+- 面向对象：matplotlib的精髓，更基础和底层的方式。
+
+推荐13两种方式根据实际情况综合使用
+
+---
+
