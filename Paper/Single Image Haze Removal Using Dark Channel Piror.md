@@ -4,13 +4,6 @@
 
 # Single Image Haze Removal Using Dark Channel Prior
 
-## Vocabulary
-
-```c++
-/*****************************************************
-degrade,turbid medium(浑浊介质),irradiance,attenuate（减弱、变细）,ambient（周围的，环境的）,fidelity（保真度）,scatter（散射，分散，散开）,color shift(色偏，偏色)，underconstrained（未限定的，欠约束的），polarization（极化），albedo（反射率）
-*****************************************************/
-```
 
 ## Abstract
 
@@ -43,7 +36,65 @@ ps：整个逻辑：问题产生的原理-问题又不得不解决-解决的难�
 
 ## Background
 
+- hazy image model
+- Tan's method and its shortage
+- Fattal's method Independent Component Analysis(ICA) and its defect
+- our method dark channel prior to estimate the transimission t(x)
+
+这里之前提出的两种方式（Tan‘s method and ICA）并没有看懂……
+
+## Dark Channel Prior
+
+1. 暗通道先验方法基于一种观测现象：无雾的图象中非天空的图块上，至少有一个颜色通道，存在一些像素，它们的值很低近似于0.
+2. 暗通道定义及其公式表达。
+3. 实践过程：无雾风景图500\*500，以patch（图块）大小为15\*15绘制暗通道图，再同样的方式绘制有雾图的暗通道图。对比观察。
+4. 结论：暗通道值可以作为雾的浓度的一种粗糙估计（值越低雾越小）。
+
+
+## Haze Removal Using Dark Channel Prior
+
+### Transmission（rough t）
+
+1. 计算透射率t(x)
+
+   根据暗通道的先验公式作为附加的约束方程，联立雾图模型方程，假设A为已知常量可计算得t。
+
+2. 天空部分的附加解释。t趋于0。
+
+3. 引入修正系数w模拟实际情况。
+
+这里假设每一个patch内t(x)是常数，这样得出的t比较粗糙。
+
+### Soft Matting （refined t）
+
+matting方式得到精细的t(x)值
+
+数学推导没看懂……反正就是对图象I做一个拉普拉斯变化，然后通过一个方程，得到精化的t值。
+
+### Atmospheric Light （A）
+
+
+
+### Recovering
+
+
+
+### Patch Size
 
 
 
 
+
+## Experimental
+
+
+
+## Discussion
+
+
+
+## 实验复现
+
+- 实验一：以500\*500图的15\*15块做有雾图和无雾图的暗通道对比。
+- 实验二：根据天空t近似0的理论想办法做天空部分优化
+- 实验三：透射率图，transmission maps，Fig6.b ，这里需要做两个对比，用了soft matting和没有的情况下的粗糙的t map
