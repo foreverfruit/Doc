@@ -1,5 +1,7 @@
 *.pdf
 *.PDF
+*.xml
+*.iml
 /Data Mining/project_matplotlib/.idea
 *.classpath
 *.project
@@ -7,4 +9,4 @@
 /Data Mining/DecisionTree/.settings
 *.pyc
 /Data Mining/DecisionTree/bin
-
+.gitignore
