@@ -3,10 +3,6 @@
 """
 import matplotlib.pyplot as plt
 from PIL import Image
-import os
-
-# 默认路径为img目录
-path = os.path.abspath('.')+'/img/'
 
 def getDarkTunnel(imgArr,patch=15):
     """
@@ -58,10 +54,9 @@ def getDarkTunnel2(imgArr,patch=15):
             # current point(i,j)
             dt = 255
             # compute patch [xb,xe,yb,be] 对应begin和end的index
-            xb= i-7
-            xe = i+7
+            xb, xe = i-7,i+7
             if xb<0:
-                xe = xe+(0-xb)
+                8xe = xe+(0-xb)
                 xb = 0
             if xe>(rows-1):
                 xb = xb-(xe-rows+1)
@@ -107,6 +102,6 @@ def resizeImage(inname,outname,size=(500,500)):
     img = Image.open(path+inname)
     print(img.format, img.size, img.mode)
     img = img.resize(size)
-    img.save(path+outname, 'jpeg')
+    img.save(outname, 'jpeg')
 
 

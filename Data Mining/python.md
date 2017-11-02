@@ -102,6 +102,16 @@ re = map((lambda x,y: x+y),[1,2,3],[6,7,9])
 
 filter(func,[10,56,101,500])，filter函数的第一个参数也是一个函数对象。它也是将作为参数的函数对象作用于多个元素。如果函数对象返回的是True，则该次的元素被储存于返回的表中，filter返回的不是表，而是循环对象（同样需要list函数转换）。
 
+```python
+def func(a):
+    if a > 100:
+        return True
+    else:
+        return False
+# 返回的循环对象装换为list为[101,500]，不是Ture False之类的func的返回值
+print(filter(func,[10,56,101,500]))
+```
+
 reduce函数的第一个参数也是函数，但有一个要求，就是这个函数自身能接收两个参数。reduce可以累进地将函数作用于各个参数。
 
 ```python
@@ -144,7 +154,7 @@ len([1,2,3])      # 返回表中元素的总数
 [1,2,3].__len__() # 实际调用
 ```
 
-在Python中，函数也是一种对象。实际上，任何一个有__call__()特殊方法的对象都被当作是函数。
+在Python中，函数也是一种对象。实际上，任何一个有\_\_call\_\_()特殊方法的对象都被当作是函数。
 
 对于内置的对象来说(比如整数、表、字符串等)，它们所需要的特殊方法都已经在Python中准备好了。而用户自己定义的对象也可以通过增加特殊方法，来实现自定义的语法。
 
@@ -163,3 +173,137 @@ Python一切皆对象(object)，每个对象都可能有多个属性(attribute)�
 可以利用__class__属性找到对象的类，然后调用类的__base__属性来查询父类
 
 property特性使用内置函数property()来创建。property()最多可以加载四个参数。前三个参数为函数，分别用于处理查询特性、修改特性、删除特性。最后一个参数为特性的文档，可以为一个字符串，起说明作用。
+
+
+
+**闭包**
+
+函数是一个对象，所以可以作为某个函数的返回结果。如果定义该函数时，函数内部调用了外部的变量，那么称这个外部变量为这个函数的环境变量，在函数作为返回值返回的时候，这个依赖的环境变量也是默认携带返回的。一个函数和它的环境变量合在一起，构成一个***闭包（closure）***。故闭包就是一个包含环境变量的函数对象，环境变量的值存在这个函数对象的\_\_closure\_\_属性中。闭包可以减少参数，有利于并行计算环境下的编程。
+
+```python
+def line_conf(a, b):
+    def line(x):
+        return a*x + b
+    return line
+
+line1 = line_conf(1, 1)
+line2 = line_conf(4, 5)
+print(line1(5), line2(5))
+```
+
+
+
+**装饰器**
+
+decorator，类似于装饰模式，或者切面编程，可以用来增强方法或者类。利用的实际是函数对象这个概念。定义装饰器的时候，实际就是在装饰器对象内部定义一个新的函数，再作为返回值返回，调用的时候，直接用@装饰器作用于需要被装饰的函数定义之前。
+
+```python
+# 可以对装饰器再加一层装饰，并多添加几个参数，实际上是一种闭包方式
+def decorator(F):
+    def new_F(a, b):
+        print("input", a, b)
+        return F(a, b)
+    return new_F
+
+# get square sum
+@decorator
+def square_sum(a, b):
+    return a**2 + b**2
+
+# get square diff
+@decorator
+def square_diff(a, b):
+    return a**2 - b**2
+
+print(square_sum(3, 4))
+print(square_diff(3, 4))
+```
+
+
+
+```python
+# 类的装饰，为Bird类增加属性total_display,用以增强display方法，记录其调用次数
+def decorator(aClass):
+    class newClass:
+        def __init__(self, age):
+            self.total_display   = 0
+            self.wrapped         = aClass(age)
+        def display(self):
+            self.total_display += 1
+            print("total display", self.total_display)
+            self.wrapped.display()
+    return newClass
+
+@decorator
+class Bird:
+    def __init__(self, age):
+        self.age = age
+    def display(self):
+        print("My age is",self.age)
+
+eagleLord = Bird(5)
+for i in range(3):
+    eagleLord.display()
+```
+
+
+
+**内存**
+
+is用于判断两个引用（变量名）所指的对象是否相同（python缓存小的数字和字符，所以is判定为True）。
+
+sys包中的getrefcount()，来查看某个对象的引用计数。但是这个函数一调用，参数本身就会增加一个对象的引用，故该函数返回值会比预期多1.
+
+可以使用del关键字删除某个引用。
+
+手动回收垃圾：gc.collect()，需要导入gc模块
+
+引用计数的GC方式，留意“孤立环问题”
+
+---
+
+## Python补充
+
+使用\_\_name\_\_做单元测试
+
+多种import语法
+
+```python
+import TestLib as t
+print(t.lib_func(120))
+
+from TestLib import *
+print(lib_func(120))
+
+from TestLib import lib_func  #只引用部分对象，减小内存开销
+print(lib_func(120))
+```
+
+
+
+查询对象所属的类和类名称
+
+```python
+a = [1, 2, 3]
+print a.__class__
+print a.__class__.__name__
+```
+
+
+
+使用中文\#coding=utf8 ，或者 \#-*- coding: UTF-8 -*-
+
+
+
+**脚本与命令行结合**
+
+可以使用下面方法运行一个Python脚本，在脚本运行结束后，直接进入Python命令行。这样做的好处是脚本的对象不会被清空，可以通过命令行直接调用。
+
+```bash
+$python -i script.py
+```
+
+
+
+**内置函数**
+
