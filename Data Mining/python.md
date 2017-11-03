@@ -307,3 +307,436 @@ $python -i script.py
 
 **内置函数**
 
+基本数据类型 type()
+
+反过头来看看 dir() help() len()
+
+词典 len()
+
+文本文件的输入输出 open()
+
+循环设计 range() enumerate() zip()
+
+循环对象 iter()
+
+函数对象 map() filter() reduce()
+
+**在Python中，下列对象都相当于False： [], (), {}, 0, None, 0.0, ''**
+
+---
+
+## Python标准库
+
+
+
+**分类** 
+
+***python增强***：文字处理（正则、string）、数据对象（array、queue）、日期时间（time、datetime）、数学运算（random、math）、存储（pickle对象持久化、数据库sqlite3）
+
+***系统互动***：python运行控制（sys包，解释器自己）、操作系统（os包）、线程与进程（threading、multiprocessing）
+
+***网络***：socket、asyncore
+
+
+
+**正则，re**
+
+正则表达式(regular expression)主要功能是从字符串(string)中通过特定的模式(pattern)，搜索想要找到的内容。
+
+```python
+m = re.search(pattern, string)  # 搜索整个字符串，直到发现符合的子字符串。
+m = re.match(pattern, string)   # 从头开始检查字符串是否符合正则表达式。必须从字符串的第一个字符开始就相符。
+
+# 在string中利用正则变换pattern进行搜索，对于搜索到的字符串，用另一字符串replacement替换。返回替换后的字符串。
+str = re.sub(pattern, replacement, string) 
+
+re.split()    # 根据正则表达式分割字符串， 将分割后的所有子字符串放在一个表(list)中返回
+re.findall()  # 根据正则表达式搜索字符串，将所有符合的子字符串放在一给表(list)中返回
+```
+
+正则的书写：看正则文档
+
+^         字符串的起始位置			$         字符串的结尾位置
+
+
+
+**时间日期，time、datetime**
+
+```python
+import time
+# 时间戳
+print(time.time())   # wall clock time, unit: second
+# 用以测试程序性能，cpu空闲该时间不计时
+print(time.clock())  # processor clock time, unit: second
+
+time.sleep(10) # 可以将程序置于休眠状态，定时休眠10秒
+```
+
+datetime可以理解为date和time两个组成部分。date是指年月日构成的日期(相当于日历)，time是指时分秒微秒构成的一天24小时中的具体时间(相当于手表)。你可以将这两个分开管理(datetime.date类，datetime.time类)，也可以将两者合在一起(datetime.datetime类)。
+
+```python
+# 时间和字符串的转换
+from datetime import datetime
+format = "output-%Y-%m-%d-%H%M%S.txt" 
+str    = "output-1997-12-23-030000.txt" 
+t      = datetime.strptime(str, format)
+# 反过来，我们也可以调用datetime对象的strftime()方法，来将datetime对象转换为特定格式的字符串
+```
+
+
+
+**路径与文件，os.path、glob**
+
+```python
+import os.path
+path = '/home/vamei/doc/file.txt'
+
+print(os.path.basename(path))    # 查询路径中包含的文件名
+print(os.path.dirname(path))     # 查询路径中包含的目录
+
+info = os.path.split(path)       # 将路径分割成文件名和目录两个部分，放在一个表中返回
+path2 = os.path.join('/', 'home', 'vamei', 'doc', 'file1.txt')  # 使用目录名和文件名构成一个路径字符串
+
+p_list = [path, path2]
+print(os.path.commonprefix(p_list))    # 查询多个路径的共同部分
+
+os.path.normpath(path)   # 去除路径path中的冗余。比如'/home/vamei/../.'被转化为'/home'
+
+#-----------------------------------------------------------------------
+
+# os.path还可以查询文件信息
+import os.path 
+path = '/home/vamei/doc/file.txt'
+
+print(os.path.exists(path))    # 查询文件是否存在
+
+print(os.path.getsize(path))   # 查询文件大小
+print(os.path.getatime(path))  # 查询文件上一次读取的时间
+print(os.path.getmtime(path))  # 查询文件上一次修改的时间
+
+print(os.path.isfile(path))    # 路径是否指向常规文件
+print(os.path.isdir(path))     # 路径是否指向目录文件
+```
+
+glob包最常用的方法只有一个, glob.glob(Filename Pattern Expression)，列出所有符合该表达式的文件，类似于命令 ls
+
+
+
+**文件管理，shutil**
+
+os包包括各种各样的函数，以实现操作系统的许多功能
+
+```python
+from os import *
+mkdir(path)
+# 创建新目录，path为一个字符串，表示新目录的路径。相当于$mkdir命令
+
+rmdir(path)
+#删除空的目录，path为一个字符串，表示想要删除的目录的路径。相当于$rmdir命令
+
+listdir(path)
+#返回目录中所有文件。相当于$ls命令。
+
+remove(path)
+# 删除path指向的文件。
+
+rename(src, dst)
+# 重命名文件，src和dst为两个路径，分别表示重命名之前和之后的路径。 
+
+chmod(path, mode)
+# 改变path指向的文件的权限。相当于$chmod命令。
+
+chown(path, uid, gid)
+# 改变path所指向文件的拥有者和拥有组。相当于$chown命令。
+
+stat(path)
+# 查看path所指向文件的附加信息，相当于$ls -l命令。
+
+symlink(src, dst)
+# 为文件dst创建软链接，src为软链接文件的路径。相当于$ln -s命令。
+
+getcwd()
+# 查询当前工作路径 (cwd, current working directory)，相当于$pwd命令。
+```
+
+shutil包
+
+copy(src, dst) # 复制文件，从src到dst。相当于$cp命令。
+
+move(src, dst) # 移动文件，从src到dst。相当于$mv命令。
+
+
+
+**存储对象，pickle**
+
+```python
+# 序列化到对象到磁盘文件
+import pickle
+
+# define class
+class Bird(object):
+    have_feather = True
+    way_of_reproduction  = 'egg'
+
+summer       = Bird()                 # construct an object
+picklestring = pickle.dumps(summer)   # serialize object，文本流字符串
+
+# 直接dump到文件中
+fn           = 'a.pkl'
+with open(fn, 'w') as f:                     # open file with write-mode
+    picklestring = pickle.dump(summer, f)   # serialize and save object
+    
+# ---------------------------------------------------------------------
+# 从文件中反序列化对象
+import pickle
+
+# define the class before unpickle，这里不像java有类的字节码，这里需要重新一份一样的类定义给解释器知道该怎么反序列化，jvm可以直接通过class的字节码知道
+class Bird(object):
+    have_feather = True
+    way_of_reproduction  = 'egg'
+
+fn     = 'a.pkl'
+with open(fn, 'r') as f:
+    summer = pickle.load(f)   # read file and build object
+```
+
+cPickle包的功能和用法与pickle包几乎完全相同 (其存在差别的地方实际上很少用到)，不同在于cPickle是基于c语言编写的，速度是pickle包的1000倍。
+
+
+
+**子进程，subprocess**
+
+subprocess包主要功能是执行外部的命令和程序，类似与shell。通过标准库中的subprocess包来fork一个子进程，并运行一个外部的程序，另外subprocess还提供了一些管理标准流(standard stream)和管道(pipe)的工具，从而在进程间使用文本通信。
+
+
+
+***多线程***
+
+我们在函数中使用global来声明变量为全局变量（定义函数的时候引用外部变量）
+
+threading.Thread对象来代表线程，用threading.Lock对象来代表一个互斥锁 (mutex)。
+
+```python
+import threading
+import time
+import os
+
+# This function could be any function to do other chores.
+def doChore():
+    time.sleep(0.5)
+
+# Function for each thread
+def booth(tid):
+    global i
+    global lock
+    while True:
+        lock.acquire()                # Lock; or wait if other thread is holding the lock
+        if i != 0:
+            i = i - 1                 # Sell tickets
+            print(tid,':now left:',i) # Tickets left
+            doChore()                 # Other critical operations
+        else:
+            print("Thread_id",tid," No more tickets")
+            os._exit(0)              # Exit the whole process immediately
+        lock.release()               # Unblock
+        doChore()                    # Non-critical operations
+
+# Start of the main function
+i    = 100                           # Available ticket number 
+lock = threading.Lock()              # Lock (i.e., mutex)
+
+# Start 10 threads
+for k in range(10):
+    new_thread = threading.Thread(target=booth,args=(k,))   # Set up thread; target: the callable (function) to be run, args: the argument for the callable 
+    new_thread.start()                                      # run the thread
+```
+
+面向对象式多线程
+
+```python
+import threading
+import time
+import os
+
+# This function could be any function to do other chores.
+def doChore():
+    time.sleep(0.5)
+
+# Function for each thread
+class BoothThread(threading.Thread):
+    def __init__(self, tid, monitor):
+        self.tid          = tid
+        self.monitor = monitor
+        threading.Thread.__init__(self)
+    def run(self):
+        while True:
+            monitor['lock'].acquire()                          # Lock; or wait if other thread is holding the lock
+            if monitor['tick'] != 0:
+                monitor['tick'] = monitor['tick'] - 1          # Sell tickets
+                print(self.tid,':now left:',monitor['tick'])   # Tickets left
+                doChore()                                      # Other critical operations
+            else:
+                print("Thread_id",self.tid," No more tickets")
+                os._exit(0)                                    # Exit the whole process immediately
+            monitor['lock'].release()                          # Unblock
+            doChore()                                          # Non-critical operations
+
+# Start of the main function
+monitor = {'tick':100, 'lock':threading.Lock()}
+
+# Start 10 threads
+for k in range(10):
+    new_thread = BoothThread(k, monitor)
+    new_thread.start()
+```
+
+定义了一个类BoothThread, 这个类继承自thread.Threading类。然后我们把上面的booth()所进行的操作统统放入到BoothThread类的run()方法中。注意，我们没有使用全局变量声明global，而是使用了一个[词典](http://www.cnblogs.com/vamei/archive/2012/06/06/2537436.html)monitor存放全局变量，然后把词典作为参数传递给线程函数。由于词典是可变数据对象，所以当它被传递给函数的时候，函数所使用的依然是同一个对象，相当于被多个线程所共享。
+
+
+
+**数学与随机**
+
+```python
+# 从序列的元素中随机挑选一个元素，比如random.choice(range(10))，从0到9中随机挑选一个整数。
+random.choice(seq)  
+random.sample(seq,k) # 从序列中随机挑选k个元素
+random.shuffle(seq)  # 将序列的所有元素随机排序
+
+random.random()          # 随机生成下一个实数，它在[0,1)范围内。
+random.uniform(a,b)      # 随机生成下一个实数，它在[a,b]范围内。
+
+random.gauss(mu,sigma)    # 随机生成符合高斯分布的随机数，mu,sigma为高斯分布的两个参数。
+random.expovariate(lambd) # 随机生成符合指数分布的随机数，lambd为指数分布的参数。
+```
+
+
+
+**循环器**
+
+在 for i in iterator 结构中，循环器每次返回的对象将赋予给i，直到循环结束。使用iter()内置函数，我们可以将诸如表、字典等容器变为循环器。
+
+标准库中的itertools包提供了更加灵活的生成循环器的工具。
+
+```python
+def height_class(h):
+    if h > 180:
+        return "tall"
+    elif h < 160:
+        return "short"
+    else:
+        return "middle"
+
+friends = [191, 158, 159, 165, 170, 177, 181, 182, 190]
+
+friends = sorted(friends, key = height_class)
+# 将friends按照height_class函数进行分组，并返回分组标号和元素循环器对象
+for m, n in groupby(friends, key = height_class):
+    print(m)
+    print(list(n))
+```
+
+
+
+**数据库，sqlite3**
+
+Python自带一个轻量级的关系型数据库SQLite，Python标准库中的sqlite3提供该数据库的接口。
+
+```python
+# 创建数据库
+import sqlite3
+
+# test.db is a file in the working directory.
+conn = sqlite3.connect("test.db")
+
+c = conn.cursor()
+
+# create tables
+c.execute('''CREATE TABLE category
+      (id int primary key, sort int, name text)''')
+c.execute('''CREATE TABLE book
+      (id int primary key, 
+       sort int, 
+       name text, 
+       price real, 
+       category int,
+       FOREIGN KEY (category) REFERENCES category(id))''')
+
+# save the changes
+conn.commit()
+
+# close the connection with the database
+conn.close()
+```
+
+```python
+# 插入数据
+import sqlite3
+
+conn = sqlite3.connect("test.db")
+c    = conn.cursor()
+
+books = [(1, 1, 'Cook Recipe', 3.12, 1),
+            (2, 3, 'Python Intro', 17.5, 2),
+            (3, 2, 'OS Intro', 13.6, 2),
+           ]
+
+# execute "INSERT" 
+c.execute("INSERT INTO category VALUES (1, 1, 'kitchen')")
+
+# using the placeholder
+c.execute("INSERT INTO category VALUES (?, ?, ?)", [(2, 2, 'computer')])
+
+# execute multiple commands
+c.executemany('INSERT INTO book VALUES (?, ?, ?, ?, ?)', books)
+
+conn.commit()
+conn.close()
+```
+
+```PYTHON
+# 查询
+import sqlite3
+
+conn = sqlite3.connect('test.db')
+c = conn.cursor()
+
+# retrieve one record
+c.execute('SELECT name FROM category ORDER BY sort')
+print(c.fetchone())
+print(c.fetchone())
+
+# retrieve all records as a list
+c.execute('SELECT * FROM book WHERE book.category=1')
+print(c.fetchall())
+
+# iterate through the records
+for row in c.execute('SELECT name, price FROM book ORDER BY sort'):
+    print(row)
+```
+
+```python
+# 更新与删除
+import sqlite3
+
+conn = sqlite3.connect('test.db')
+c = conn.cursor()
+
+# retrieve one record
+c.execute('SELECT name FROM category ORDER BY sort')
+print(c.fetchone())
+print(c.fetchone())
+
+# retrieve all records as a list
+c.execute('SELECT * FROM book WHERE book.category=1')
+print(c.fetchall())
+
+# iterate through the records
+for row in c.execute('SELECT name, price FROM book ORDER BY sort'):
+    print(row)
+```
+
+```python
+# 删除数据表
+c.execute('DROP TABLE book')
+```
+
