@@ -740,3 +740,231 @@ for row in c.execute('SELECT name, price FROM book ORDER BY sort'):
 c.execute('DROP TABLE book')
 ```
 
+---
+
+## Python面向对象
+
+**继承、多继承**
+
+Python支持多继承，但是不同类型的类多继承时方法的搜索不同。经典类就是在类定义时没有显示继承Object的类。推荐使用新式类，某类在定义时显示继承object，那么该类的继承树下的所有子类都是新式类。
+
+![img](http://images0.cnblogs.com/blog2015/425762/201508/272341313127410.jpg)
+
+![img](http://images0.cnblogs.com/blog2015/425762/201508/272341553282314.jpg)
+
+- 当类是经典类时，多继承情况下，会按照深度优先方式查找
+- 当类是新式类时，多继承情况下，会按照广度优先方式查找
+
+![img](http://images0.cnblogs.com/blog2015/425762/201508/272315068126604.jpg)
+
+
+
+类的成员可以分为三大类：字段、方法和属性
+
+![img](http://images2015.cnblogs.com/blog/425762/201509/425762-20150916222236164-249943282.png)
+
+所有成员中，只有普通字段的内容保存对象中，即：根据此类创建了多少对象，在内存中就有多少个普通字段。而其他的成员，则都是保存在类中，即：无论对象的多少，在内存中只创建一份。
+
+每种类的成员都有两种形式：
+
+- 公有成员，在任何地方都能访问
+- 私有成员，只有在类的内部才能方法
+
+**私有成员和公有成员的定义不同**：私有成员命名时，前两个字符是下划线（特殊成员除外，例如：\_\_init\_\_、\_\_call\_\_、\_\_dict\_\_等）。
+
+特殊成员：
+
+```python
+# __doc__: 类的描述信息
+# __module__ 表示当前操作的对象在那个模块
+# __class__ 表示当前操作的对象的类是什么
+# __init__ 构造方法，通过类创建对象时，自动触发执行
+# __del__ 析构方法，当对象在内存中被释放时，自动触发执行。
+# __call__ 对象后面加括号，触发执行。
+# __dict__ 类或对象中的所有成员(注意成员的内存模型，对应去寻找)
+# __str__ 如果一个类中定义了__str__方法，那么在打印 对象 时，默认输出该方法的返回值。相当于toString
+# __getitem__、__setitem__、__delitem__用于索引操作，如字典。以上分别表示获取、设置、删除数据
+# __getslice__、__setslice__、__delslice__该三个方法用于分片操作
+# __iter__ 用于迭代器，让该类对象可以直接用于循环迭代
+```
+
+
+
+**字段**
+
+字段包括：普通字段和静态字段，他们在定义和使用中有所区别，而最本质的区别是内存中保存的位置不同，
+
+- 普通字段属于**对象**
+- 静态字段属于**类**
+
+```python
+class Province:
+
+    # 静态字段
+    country ＝ '中国'
+
+    def __init__(self, name):
+
+        # 普通字段
+        self.name = name
+
+
+# 直接访问普通字段
+obj = Province('河北省')
+print obj.name
+
+# 直接访问静态字段
+Province.country
+```
+
+![img](http://images2015.cnblogs.com/blog/425762/201509/425762-20150907094454965-329821364.jpg)
+
+
+
+**方法**
+
+方法包括：普通方法、静态方法和类方法，三种方法在**内存中都归属于类**，区别在于调用方式不同。
+
+- 普通方法：由**对象**调用；至少一个**self**参数；执行普通方法时，自动将调用该方法的**对象**赋值给**self**；
+- 类方法：由**类**调用； 至少一个**cls**参数；执行类方法时，自动将调用该方法的**类**复制给**cls**；
+- 静态方法：由**类**调用；无默认参数；
+
+```python
+class Foo:
+
+    def __init__(self, name):
+        self.name = name
+
+    def ord_func(self):
+        """ 定义普通方法，至少有一个self参数 """
+
+        # print self.name
+        print '普通方法'
+
+    @classmethod
+    def class_func(cls):
+        """ 定义类方法，至少有一个cls参数 """
+
+        print '类方法'
+
+    @staticmethod
+    def static_func():
+        """ 定义静态方法 ，无默认参数"""
+
+        print '静态方法'
+
+
+# 调用普通方法
+f = Foo()
+f.ord_func()
+
+# 调用类方法
+Foo.class_func()
+
+# 调用静态方法
+Foo.static_func()
+```
+
+![img](http://images2015.cnblogs.com/blog/425762/201510/425762-20151012145051507-726073921.jpg)
+
+
+
+**属性**
+
+Python中的属性其实是**普通方法**的变种。
+
+属性的定义有两种方式：
+
+- 装饰器 即：在方法上应用装饰器
+- 静态字段 即：在类中定义值为property对象的静态字段
+
+一、装饰器方式
+
+```python
+# 经典类，具有一种@property装饰器
+class Goods:
+
+    @property
+    def price(self):
+        return "wupeiqi"
+# ############### 调用 ###############
+obj = Goods()
+result = obj.price  # 自动执行 @property 修饰的 price 方法，并获取方法的返回值
+```
+
+```python
+# 新式类，具有三种@property装饰器
+class Goods(object):
+
+    @property # 属性定义，同时相当于get方法
+    def price(self):
+        print '@property'
+
+    @price.setter # 相当于set方法
+    def price(self, value):
+        print '@price.setter'
+
+    @price.deleter # 属性的delete方法
+    def price(self):
+        print '@price.deleter'
+
+# ############### 调用 ###############
+obj = Goods()
+
+obj.price          # 自动执行 @property 修饰的 price 方法，并获取方法的返回值
+
+obj.price = 123    # 自动执行 @price.setter 修饰的 price 方法，并将  123 赋值给方法的参数
+
+del obj.price      # 自动执行 @price.deleter 修饰的 price 方法
+```
+
+
+
+二、静态字段方式，创建值为property对象的静态字段
+
+```python
+class Foo:
+
+    def get_bar(self):
+        return 'wupeiqi'
+
+    BAR = property(get_bar)
+
+obj = Foo()
+reuslt = obj.BAR        # 自动调用get_bar方法，并获取方法的返回值
+print reuslt
+```
+
+```python
+'''
+	property的构造方法中有个四个参数：
+    第一个参数是方法名，调用 对象.属性 时自动触发执行方法
+    第二个参数是方法名，调用 对象.属性 ＝ XXX 时自动触发执行方法
+    第三个参数是方法名，调用 del 对象.属性 时自动触发执行方法
+    第四个参数是字符串，调用 对象.属性.__doc__ ，此参数是该属性的描述信息
+
+'''
+class Foo：
+
+    def get_bar(self):
+        return 'wupeiqi'
+
+    # *必须两个参数
+    def set_bar(self, value): 
+        return return 'set value' + value
+
+    def del_bar(self):
+        return 'wupeiqi'
+
+    BAR ＝ property(get_bar, set_bar, del_bar, 'description...')
+
+obj = Foo()
+
+obj.BAR              # 自动调用第一个参数中定义的方法：get_bar
+obj.BAR = "alex"     # 自动调用第二个参数中定义的方法：set_bar方法，并将“alex”当作参数传入
+del Foo.BAR          # 自动调用第三个参数中定义的方法：del_bar方法
+obj.BAE.__doc__      # 自动获取第四个参数中设置的值：description...
+```
+
+
+
