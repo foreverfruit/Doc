@@ -395,3 +395,92 @@ pyplot、pylab和面向对象的方式
 
 ---
 
+## 子图subplot
+
+matplotlib绘图的三个层级：FigureCanvas 画布，Figure 图，Axes 坐标系。一张图上画多个对比图像，这其实不是多个Figure，而是一个Figure上建立多个Axes，每个Axes表达一个内容。
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(1,10)
+
+fig = plt.figure()
+
+axe1 = fig.add_subplot(221)
+axe2 = fig.add_subplot(222)
+axe3 = fig.add_subplot(223)
+axe4 = fig.add_subplot(224)
+
+axe1.plot(x,[ i**3 for i in x])
+axe2.scatter(x,x)
+axe3.hist(x,bins=9)
+axe4.plot(x,-x)
+
+plt.show()
+```
+
+
+
+## 多图
+
+```python
+import matplotlib.pyplot as plt
+
+f1 = plt.figure()
+ax1 = f1.add_subplot(111)
+ax1.plot([1,2],[1,2])
+
+f2 = plt.figure()
+ax2 = f2.add_subplot(222)
+ax2.plot([1,2],[2,1])
+
+# 一次弹出两个图框
+plt.show()
+```
+
+
+
+## 网格
+
+axe.grid()、plt.grid()
+
+
+
+## 图例
+
+画图的时候指定label，然后plt.legend()自动根据label显示图例
+
+图例可以由plt显示，也可以由axe显示。同样label可以在不同的时机创建
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(10)
+f = plt.figure()
+ax = f.add_subplot(111)
+ax.plot(x,x,label='$ y = x $',color='b')
+ax.plot(x,x**2,label='$ y = x^2 $',color='g')
+ax.plot(x,x**3,label='$ y = x^3 $',color='r')
+
+ax.grid(linestyle='-.',color='y')
+
+ax.legend()
+
+# 调整坐标轴范围(x1,x2,y1,y2)
+plt.axis([0,10,0,500])
+```
+
+
+
+## 坐标轴范围
+
+plt.axis([x1,x2,y1,y2])
+
+plt.xlim(),plt.ylim()
+
+
+
+## 坐标轴刻度
+
