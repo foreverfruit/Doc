@@ -418,6 +418,10 @@ axe3.hist(x,bins=9)
 axe4.plot(x,-x)
 
 plt.show()
+#--------------另一种方式----------------
+fig, axes = plt.subplots(ncol=2,nrow=2)
+ax1,ax2,ax3,ax4 = axes.ravel()
+# 再用每个ax再每个图轴上画数据
 ```
 
 
@@ -531,4 +535,342 @@ plt.show()
 
 
 ## 添加坐标轴
+
+效果：多重y轴，同一个axe中的两个线采用不用的刻度，这个时候需要两条对应的坐标轴，左右并列分别对应两条数据线。
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(0,11)
+
+y1 = x**2
+y2 = -3*x+3
+
+plt.plot(x,y1,color='r',label='$y1=x^2$')
+
+# 添加一条并列坐标轴
+plt.twinx()
+plt.plot(x,y2,color='b',label='$y2=-3*x+3$')
+
+# 此时两条线y1 y2就在同一个axe上对应不同的y轴
+plt.legend()
+plt.show()
+
+#-----------------OOP方式--------------------------
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(0,11)
+
+y1 = x**2
+y2 = -3*x+3
+
+fig = plt.figure()
+ax = fig.add_subplot(111)
+
+l1, = ax.plot(x,y1,color='r',label='$y1=x^2$')
+
+ax2 = ax.twinx()
+l2, = ax2.plot(x,y2,color='b',label='$y2=-3*x+3$')
+
+# 这里需要了解axe和figure的范围，若gcf()再legend，图例会滑到整个图的四个角，坐标轴外面
+# 若gca()表示获取到轴，再legend，图例画在轴范围内
+plt.gca().legend((l1,l2),('A','B'),loc=0)
+plt.show()
+
+#---------------------
+# 同理，twiny可以获得并列的x轴共用一个y轴
+```
+
+
+
+## 注释
+
+key word：annotate
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.arange(-10,11)
+y = x**2
+
+plt.plot(x,y,'b-')
+
+# xy表示箭头的位置，xytext表示注释文本的坐标
+# arrowprops字典类型的关于箭头的属性设置。
+# facecolor颜色，frac箭头百分百，arrowstyle是一个内置样式，查看文档具体的props设置
+plt.annotate('this is bottom',xy=(0,1),xytext=(-3,20),
+             arrowprops={'arrowstyle':'->'})
+
+plt.show()
+
+```
+
+
+
+## 画文字
+
+plt.text(x,y,words)，words文字内容自动识别Latex形式的字符串
+
+[Latex](http://matplotlib.org/tutorials/text/mathtext.html#sphx-glr-tutorials-text-mathtext-py)学习链接
+
+注：因为latex中有大量的反斜杠，推荐用r'........'的形式创建字符串，表示默认不转义反斜杠
+
+
+
+## 区域填充
+
+区域上色
+
+key words: fill()	fill_between()
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0,5*np.pi,1000)
+
+y1 = np.sin(x)
+y2 = np.cos(x)
+'''
+
+plt.fill(x,y1,'b',alpha=0.3)
+plt.fill(x,y2,'r',alpha=0.3)
+
+'''
+# 交集填充，where表示填充区域的条件表达式
+# interpolate表示是否完全填充，因为数据点是离散的，粒度太粗的时候，会有区域填充不到，这个参数会实现完全填充
+plt.fill_between(x,y1,y2,where=(y1>y2),facecolor='r',alpha=0.5,interpolate=True)
+plt.fill_between(x,y1,y2,where=(y1<y2),facecolor='b',alpha=0.5)
+
+plt.show()
+
+```
+
+
+
+## 形状
+
+key words: matplotlib.patches		add_patch
+
+```python
+import matplotlib.pyplot as plt
+import matplotlib.patches as mp
+
+# 构建一个圆对象,xy是圆心位置
+circle = mp.Circle(xy=(1,2),radius=1,
+                   color='blue',alpha=0.5,fill=True,ls='-.')
+
+# 矩形，xy是左下角坐标
+rect = mp.Rectangle(xy=(3,3),width=2,height=1,color='g',ls='-',alpha=0.5)
+
+# 多边形
+rp = mp.RegularPolygon(xy=(5,5),numVertices=7,radius=1,alpha=0.3,color='r')
+
+# 椭圆
+elp = mp.Ellipse(xy=(1,4),width=3,height=1,color='y',alpha=0.3)
+
+ax = plt.gca()
+# 该图轴上添加这个图块，传入图块对象
+ax.add_patch(circle)
+ax.add_patch(rect)
+ax.add_patch(rp)
+ax.add_patch(elp)
+
+# 设置轴范围
+# ax.set_xlim(0,10)
+# ax.set_ylim(0,10)
+
+# 设置坐标轴相等，xy比例相同
+plt.axis('equal')
+plt.show()
+```
+
+
+
+## 美化-样式
+
+使用多种画图样式
+
+key words：plt.style	plt.style.use('xx')	plt.style.available
+
+
+
+## 极坐标
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+r = np.arange(1,6,1)
+theta = np.arange(0,2*np.pi+1,np.pi/2)
+
+# projection透射，表示轴的投射方式，这里采用极坐标polar
+ax = plt.subplot(111,projection='polar')
+ax.plot(theta,r,color='r',linewidth=3)
+ax.grid(True)
+
+# 再画一条
+r2 = [5,5,5,5,5]
+r2 = np.empty(5) # 5个空元素
+r2.fill(5) # 元素填充为5
+
+theta2 = [0,np.pi/2,np.pi,np.pi*3/2,0]
+ax.plot(theta2,r2,color='g',lw=3)
+
+plt.show()
+
+# --------------------------------
+# 当然也可以直接采用plt的方法
+# plt.polar()
+```
+
+
+
+## 练习项目一：函数积分图
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Polygon
+
+x = np.linspace(0,10)
+y = -(x-2)*(x-8)+40
+
+fig = plt.figure()
+
+ax = fig.add_subplot(111)
+
+# matplotlib提供长参数的简写，linewidth简写为lw，同理linestyle=ls
+ax.plot(x,y,'r-',lw=2)
+
+# 设置两个积分起止点
+a,b = 2,9
+
+# 调整坐标轴
+ax.set_xticks([a,b])              # 设置点，找到点
+ax.set_xticklabels(['$a$','$b$'])     # 设置tick的标签
+ax.set_yticks([])
+
+# 将右边和上边的框去掉
+ax.spines['right'].set_visible(False)
+ax.spines['top'].set_visible(False)
+ax.set_xlim(xmin=1)
+#ax.xaxis.set_ticks_position('bottom')
+
+
+# 画坐标轴的显示--这里不太理想，这种方式，可能存在改进
+fig.text(0.9,0.05,'x')
+fig.text(0.1,0.9,'y')
+
+# 画积分区域，patches，多边形polygon，需要一个二维的数组（x,y）序列作为它的边界
+ix = np.linspace(a,b)
+iy = -(ix-2)*(ix-8)+40
+# 这里构造数组的方法用到了zip函数和list函数
+verts = [(a, 0)] + list(zip(ix, iy)) + [(b, 0)]
+# 构建Polygon类型的patches对象，颜色设置利用[0,1]内的数字表示灰度
+poly = Polygon(verts,facecolor='0.9',edgecolor='0.5')
+
+# 画patch
+ax.add_patch(poly)
+
+# 画公式
+str = r'$\int_a^b(-(x-2)(x+8)+40)dx$'
+sx = (a+b)/2
+sy = 35
+# 对齐方式可用 ha简写代替 horizontalalignment
+ax.text(sx,sy,str,fontsize=10,ha='center')
+
+plt.show()
+```
+
+
+
+## 练习项目二：散点图和直方图的联合
+
+```python
+import matplotlib.pyplot as plt
+import numpy as np
+
+# 使用其他的画图样式
+plt.style.use('ggplot')
+
+# 画图数据（正相关的x和y）
+x = np.random.randn(200)
+y = x + np.random.randn(200)*0.8
+
+# 定义一些距离：margin_border,width,height,margin_gap
+# 分别表示， 图边距，散点图宽(正方形),直方图高，散点图和直方图间距
+margin_border,width,height,margin_gap=0.1,0.6,0.2,0.02
+
+# 散点图坐标
+s_bottom_x=margin_border
+s_bottom_y=margin_border
+s_height = s_width = width
+
+# 直方图1坐标
+h1_bootom_x = margin_border
+h1_bootom_y = s_bottom_y+width+margin_gap
+h1_height=height
+h1_width = width
+
+# 直方图2坐标
+h2_bottom_x = margin_border+width+margin_gap
+h2_bottom_y = margin_border
+h2_height=width
+h2_width=height
+
+# 生成相应的轴
+rect = [s_bottom_x,s_bottom_y,s_width,s_height]
+ax_scatter = plt.axes(rect)
+
+rect = [h1_bootom_x,h1_bootom_y,h1_width,h1_height]
+ax_h1 = plt.axes(rect)
+
+rect = [h2_bottom_x,h2_bottom_y,h2_width,h2_height]
+ax_h2 = plt.axes(rect)
+
+# 调整坐标轴，删除一些多余的轴刻度
+ax_h1.set_xticks([])
+ax_h2.set_yticks([])
+
+# 画图
+ax_scatter.scatter(x,y,color='r',alpha=0.5)
+
+# 固定直方图的箱体宽度
+bin_width = 0.25
+# 计算箱数
+maxValue = np.max([np.max(np.fabs(x)),np.max(np.fabs(y))])
+nbins = int(maxValue/0.25+1)
+
+# 根据数据范围为散点图设置刻度范围
+ax_scatter_lim = nbins*bin_width
+ax_scatter.set_xlim(-ax_scatter_lim,ax_scatter_lim)
+ax_scatter.set_ylim(-ax_scatter_lim,ax_scatter_lim)
+
+# 画直方图
+ax_h1.hist(x,bins=nbins,color='g',alpha=0.5)
+ax_h1.set_xlim(ax_scatter.get_xlim())
+ax_h1.locator_params('y',nbins=8)
+
+ax_h2.hist(y,bins=nbins,orientation='horizontal',color='b',alpha=0.5)
+ax_h2.set_ylim(ax_scatter.get_ylim())
+ax_h2.locator_params('x',nbins=8)
+
+plt.show()
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
