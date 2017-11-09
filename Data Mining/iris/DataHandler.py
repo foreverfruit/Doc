@@ -25,6 +25,10 @@ def loadData():
 
     return trainingset,testset
 
+
+def devidepoints(dateset:list):
+    """根据数据集，为数据集的每个属性计算划分点"""
+
 if __name__ == '__main__':
     train,test = loadData()
     print(train)

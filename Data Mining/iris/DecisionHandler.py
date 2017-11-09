@@ -31,7 +31,10 @@ def predict(data):
 
 
 if __name__ == '__main__':
+    # 获取数据集
     trainset,testset = dh.loadData()
+    # 获得每个属性的划分点
+    devidePoints = dh.devidepoints(trainset)
     # 构造决策树
     root = createDecisionTree(trainset)
     # 测试该决策树

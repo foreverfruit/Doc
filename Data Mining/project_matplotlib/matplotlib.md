@@ -107,6 +107,102 @@ print(sepal_length[101:150].var())
 
 
 
+```python
+#---------------------numpy简单学习--------------------------------
+
+# 列表list转矩阵
+array = np.array([[1,2,3],[2,3,4]]) # 2*3矩阵
+
+# 查看维度
+array.ndim # dimention
+
+# 形状，行列值
+array.shape
+
+# 大小，个数
+array.size
+
+# 指定array类型
+x = np.array(list,dtype=np.xxx) # np.xxx表示np的类型
+x.dtype # 查看类型
+
+# 生成指定维度的空array
+x = np.zeros((2,3,4)) # 这表明x是三维数组，2行3列，第三个维度size(深度、高度)为4
+
+# 同理生成值都为1的array
+x = np.ones((2,3,4))   # 同理，np.empty((shape)) 生成近似zeros的array
+
+# 产生随机的矩阵
+x = np.random.random((shape)) # 生成shape样式的矩阵，值随机(0,1)区间内
+
+# 生成有序的序列
+x = np.arange(start,end,step)  # 生成1维数据列，类似python的range的效果，默认区间左闭右开
+# 注，range返回的是range对象，到list还需要转换
+
+# 将np.array重新构形
+x.reshape((new shape)) # 比如 new shape = (2,3,4) 将x装换为3维矩阵
+# 注，转换前后的size不能变，如size=10的array不能reshape为(2,3,4)的矩阵
+
+x.reshape((-1,3,4)) # new shape中可以用-1表示自动计算值，根据size自动填写，显然只能指定一个-1值
+
+# 区间均分,类似于分箱
+x = np.linspace(start,end,nbins) # 将[start,end]区域分成nbins段，返回一个array，默认包含首尾（闭区间）
+
+
+# -------------- 基础运算 -------------------------------
+# np中的运算会作用于array的每个元素,可以直接调用np的函数，也可以用oob方式调用ndarray的成员方法，且可以指定参数axis，表示对某一维度上进行运算
+
+# 矩阵乘法 np.dot(x,y)
+x = np.arange(0,4).reshape((2,2))
+y = np.arange(5,9).reshape((-1,2))
+r1 = x*y		 # 元素对应相乘
+r2 = np.dot(x,y) # 矩阵乘法运算
+r2 = x.dot(b)    # 同上
+
+# 最大，最小，求和，一下方法可指定参数axis（如，axis=0），表示在这个维度、轴、rank上运算
+np.sum(x) # x.sum()
+np.min(x) # x.min()
+np.max(x) # x.max()
+
+# 最大值最小值的索引,多维矩阵也按一维线性索引返回
+index = np.argmin(x)
+index = np.ragmax(x)
+
+# 中位数、平均值、累计值
+mean = np.mean(x)
+median = np.median(x)
+cumsum = np.cumsum(x) # 累计和
+np.diff(x) # x[j,i+1]-x[j,i]，按行输出
+
+np.sort(x) # 逐行排序
+
+# 矩阵转置
+np.transpose(x) 
+x.T
+
+# clip可以理解为一种过滤
+np.clip(x,a,b) # x矩阵的元素中所有小于a的元素置为a,大于b的置为b,即ab为取值范围
+
+# 多维矩阵的单行形式
+x.flat # x.flatten() ，当然也可以reshape到一维数组
+
+# 数据合并
+np.vstack((a,b)) # vertical 垂直合并
+np.hstack((a,b)) # horizontal 水平合并a、b
+np.concatenate((a,b,c,d,...,n),axis=j) # 在j维度上对a到n的array合并
+
+# 分裂矩阵
+np.split(x,nbins,axis=n) # 对x做第n维的nbins等份分割，检测nbins必须满足axis=n上等份要求，否则出错，如4列分3份，出错……
+np.array_split(x,nbins,axis=n) # 不等份 分割。对nbins无检测
+
+##！ python默认是引用赋值
+a = np.array(....)
+b = a # 此时a is b == True，同一块内存，修改一个，都改变
+b = a.copy() # 重新创建一个值一样的对象给b，此时a、b两个不同内存空间的对象，不再关联，彼此独立
+```
+
+
+
 ---
 ## 散点图
 
