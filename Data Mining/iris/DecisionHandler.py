@@ -1,6 +1,6 @@
 # 决策处理模块
 import DataHandler as dh
-from TreeNode import TreeNode as tn
+from TreeNode import TreeNode
 
 def createDecisionTree(dataset:list):
     """
@@ -8,8 +8,12 @@ def createDecisionTree(dataset:list):
     :param dataset:输入训练数据集
     :return: 返回当前决策树的root结点
     """
-    pass
-    return tn(None)
+    # 创建树根节点
+    tn = TreeNode(dataset)
+    # 树根据数据集开始分裂
+    tn.divide()
+    # 返回最后分裂完成的决策树
+    return tn
 
 def testDecisonTree(dataset:list):
     """
@@ -31,13 +35,15 @@ def predict(data):
 
 
 if __name__ == '__main__':
-    # 获取数据集
-    trainset,testset = dh.loadData()
-    # 获得每个属性的划分点
-    devidePoints = dh.devidepoints(trainset)
-    # 构造决策树
-    root = createDecisionTree(trainset)
+    # 获取原始数据集
+    trainingset, testset, dataset = dh.loadData()
+    # 离散化处理,得到标准的处理数据standard data set
+    s_trainset = dh.discretization(trainingset)
+    s_testset = dh.discretization(testset)
+    s_dataset = dh.discretization(dataset)
+
+
+    # 用训练集构造决策树
+    root = createDecisionTree(s_trainset)
     # 测试该决策树
-    # 需要改进，这里root返回的模型决策树是带着训练数据的，应该返回一棵只有结构没有数据的树
-    # 预测数据
-    result = predict([1,2,3,4])
+    # TODO,怎么跟踪测试记录的流动，可见叶结点的分裂的属性测试条件应该被记录
